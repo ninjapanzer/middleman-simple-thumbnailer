@@ -15,7 +15,7 @@ module MiddlemanSimpleThumbnailer
     end
 
     def resized_img_path
-      img_path.gsub(image_name, resized_image_name)
+      img_path.gsub(image_name, sanitized_resized_image_name)
     end
 
     def base64_data
@@ -47,7 +47,11 @@ module MiddlemanSimpleThumbnailer
     end
 
     def resized_image_name
-      image_name.split('.').tap { |a| a.insert(-2, resize_to) }.join('.')      
+      image_name.split('.').tap { |a| a.insert(-2, resize_to) }.join('.')
+    end
+
+    def sanitized_resized_image_name
+      resized_image_name.gsub(/[%@!<>]/, '>' => 'gt', '<' => 'lt')
     end
 
     def abs_path
@@ -59,7 +63,7 @@ module MiddlemanSimpleThumbnailer
     end
 
     def resized_img_abs_path
-      File.join(build_dir, middleman_abs_path).gsub(image_name, resized_image_name)
+      File.join(build_dir, middleman_abs_path).gsub(image_name, sanitized_resized_image_name)
     end
 
     def source_dir
